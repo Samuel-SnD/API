@@ -82,3 +82,10 @@ class UsuarioCreate (UsuarioBase) :
 
 class Usuario (UsuarioBase) :
     id : int
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
