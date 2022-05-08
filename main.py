@@ -97,3 +97,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": user.correo}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED})
+async def get_current_user(current_user:schemas.Usuario = Depends(get_current_user)) :
+    return current_user
