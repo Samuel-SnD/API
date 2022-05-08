@@ -101,3 +101,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @app.get("/users/me", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED})
 async def get_current_user(current_user:schemas.Usuario = Depends(get_current_user)) :
     return current_user
+
+@app.get("/users/{user_id}", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED})
+async def get_user_by_id(user_id:int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+    user = crud.get_user(db, user_id)
+    if user is None :
+        raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
+    return user
