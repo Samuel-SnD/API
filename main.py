@@ -46,8 +46,8 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(email: str, password: str, db: Session = Depends(get_db)):
-    user:models.Usuario = crud.get_user_by_email(db, email)
+def authenticate_user(correo: str, password: str, db: Session = Depends(get_db)):
+    user:models.Usuario = crud.get_user_by_correo(db, correo)
     if not user:
         return False
     if not verify_password(password, user.contraseña):
@@ -72,13 +72,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        correo: str = payload.get("sub")
+        if correo is None:
             raise credentials_exception
-        token_data = schemas.TokenData(email = email)
+        token_data = schemas.TokenData(correo = correo)
     except JWTError:
         raise credentials_exception
-    user = crud.get_user_by_email(db, token_data.email)
+    user = crud.get_user_by_correo(db, token_data.correo)
     if user is None:
         raise credentials_exception
     return user
@@ -89,11 +89,11 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Incorrect correo or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": user.correo}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
