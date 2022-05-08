@@ -47,7 +47,7 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
-    user = crud.get_user_by_email(db, username=username)
+    user = crud.get_user_by_email(db, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -78,7 +78,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         token_data = schemas.TokenData(username = username)
     except JWTError:
         raise credentials_exception
-    user = crud.get_user_by_email(db, username = token_data.username)
+    user = crud.get_user_by_email(db, token_data.username)
     if user is None:
         raise credentials_exception
     return user
