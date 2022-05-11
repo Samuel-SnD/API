@@ -109,9 +109,17 @@ async def get_user_by_id(user_id:int, db:Session = Depends(get_db), current_user
         raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
     return user
 
+@app.get("/users/{user_email}", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND})
+async def get_user_by_email(user_email:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+    user = crud.get_user_by_email(db, user_email)
+    if user is None :
+        raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
+    return user
+
 @app.post("/users/", response_model = schemas.Usuario, responses = {**responses.USER_ALREADY_REGISTERED})
 async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) :
     db_user = crud.get_user_by_email(db, user.correo)
     if db_user:
         raise HTTPException (status_code = 400, detail = "Usuario ya registrado")
     return crud.create_user(db, user)
+
