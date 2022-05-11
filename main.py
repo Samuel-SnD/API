@@ -163,6 +163,6 @@ async def get_comedor_by_id(comedor_id:int, db:Session = Depends(get_db), curren
 async def get_comedores(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
     return crud.get_comedores(db, skip, limit)
 
-@app.post("/comedores", response_model = schemas.Comedor, responses = {**responses.USER_ALREADY_REGISTERED}, tags=["comedor"])
+@app.post("/comedores", response_model = schemas.Comedor, tags=["comedor"])
 async def create_comedor(comedor:schemas.ComedorCreate, db:Session = Depends(get_db)) :
     return crud.create_comedor(db, comedor)
