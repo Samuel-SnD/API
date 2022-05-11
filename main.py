@@ -127,7 +127,7 @@ async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) 
         raise HTTPException (status_code = 400, detail = "Usuario ya registrado")
     return crud.create_user(db, user)
 
-@app.get("/admins/{admins_id}", response_model = schemas.Administrador, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["admins"])
+@app.get("/admins/{admin_id}", response_model = schemas.Administrador, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["admins"])
 async def get_admin_by_id(admin_id:int, db:Session = Depends(get_db), current_user:schemas.Administrador = Depends(get_current_user)) :
     admin = crud.get_admin(db, admin_id)
     if admin is None :
