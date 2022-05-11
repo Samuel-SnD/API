@@ -127,3 +127,27 @@ async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) 
         raise HTTPException (status_code = 400, detail = "Usuario ya registrado")
     return crud.create_user(db, user)
 
+@app.get("/admins/{admins_id}", response_model = schemas.Administrador, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["admins"])
+async def get_admin_by_id(admin_id:int, db:Session = Depends(get_db), current_user:schemas.Administrador = Depends(get_current_user)) :
+    admin = crud.get_admin(db, admin_id)
+    if admin is None :
+        raise HTTPException (status_code = 404, detail = "Administrador no encontrado")
+    return admin
+
+@app.get("/admins/", response_model = schemas.Administrador, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["admins"])
+async def get_admin_by_email(admin_email:str, db:Session = Depends(get_db), current_user:schemas.Administrador = Depends(get_current_user)) :
+    admin = crud.get_admin_by_email(db, admin_email)
+    if admin is None :
+        raise HTTPException (status_code = 404, detail = "Administrador no encontrado")
+    return admin
+
+@app.get("/admins", response_model = List[schemas.Administrador], responses = {**responses.UNAUTORIZED}, tags=["admins"])
+async def get_admins(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Administrador = Depends(get_current_user)) :
+    return crud.get_admins(db, skip, limit)
+
+@app.post("/admins", response_model = schemas.Administrador, responses = {**responses.USER_ALREADY_REGISTERED}, tags=["admins"])
+async def create_admin(admin:schemas.AdministradorCreate, db:Session = Depends(get_db)) :
+    db_admin = crud.get_admin_by_email(db, admin.correo)
+    if db_admin:
+        raise HTTPException (status_code = 400, detail = "Administrador ya registrado")
+    return crud.create_admin(db, admin)
