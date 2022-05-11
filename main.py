@@ -151,3 +151,18 @@ async def create_admin(admin:schemas.AdministradorCreate, db:Session = Depends(g
     if db_admin:
         raise HTTPException (status_code = 400, detail = "Administrador ya registrado")
     return crud.create_admin(db, admin)
+
+@app.get("/comedores/{comedor_id}", response_model = schemas.Comedor, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["comedor"])
+async def get_comedor_by_id(comedor_id:int, db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
+    comedor = crud.get_comedor(db, comedor_id)
+    if comedor is None :
+        raise HTTPException (status_code = 404, detail = "Comedor no encontrado")
+    return comedor
+
+@app.get("/comedores", response_model = List[schemas.Comedor], responses = {**responses.UNAUTORIZED}, tags=["comedor"])
+async def get_comedores(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
+    return crud.get_comedores(db, skip, limit)
+
+@app.post("/comedores", response_model = schemas.Comedor, responses = {**responses.USER_ALREADY_REGISTERED}, tags=["comedor"])
+async def create_comedor(comedor:schemas.ComedorCreate, db:Session = Depends(get_db)) :
+    return crud.create_comedor(db, comedor)
