@@ -255,3 +255,39 @@ async def get_mesas(skip : int = 0, limit : int = 100 , db:Session = Depends(get
 @app.post("/mesas", response_model = schemas.Mesa, tags=["mesas"])
 async def create_mesa(mesa:schemas.MesaCreate, db:Session = Depends(get_db)) :
     return crud.create_mesa(db, mesa)
+
+@app.get("/reservas/{reserva_id}", response_model = schemas.Reserva, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
+async def get_reserva_by_id(reserva_id:int, db:Session = Depends(get_db), current_user:schemas.Reserva = Depends(get_current_user)) :
+    reserva = crud.get_reserva(db, reserva_id)
+    if reserva is None :
+        raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
+    return reserva
+
+@app.get("/reservas/{reserva_fecha}", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
+async def get_reserva_by_fecha(reserva_fecha:str, db:Session = Depends(get_db), current_user:schemas.Reserva = Depends(get_current_user)) :
+    reserva = crud.get_reserva_by_fecha(db, reserva_fecha)
+    if reserva is None :
+        raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
+    return reserva
+
+@app.get("/reservas/{reserva_user}", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
+async def get_reserva_by_user(reserva_user:int, db:Session = Depends(get_db), current_user:schemas.Reserva = Depends(get_current_user)) :
+    reserva = crud.get_reserva_by_user(db, reserva_user)
+    if reserva is None :
+        raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
+    return reserva
+
+@app.get("/reservas/{reserva_mesa}", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
+async def get_reserva_by_mesa(reserva_mesa:int, db:Session = Depends(get_db), current_user:schemas.Reserva = Depends(get_current_user)) :
+    reserva = crud.get_reserva_by_mesa(db, reserva_mesa)
+    if reserva is None :
+        raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
+    return reserva
+
+@app.get("/reservas/", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED}, tags=["reservas"])
+async def get_reservas(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Reserva = Depends(get_current_user)) :
+    return crud.get_reservas(db, skip, limit)
+
+@app.post("/reservas/", response_model = schemas.Reserva, tags=["reservas"])
+async def create_reserva(reserva:schemas.ReservaCreate, db:Session = Depends(get_db)) :
+    return crud.create_reserva(db, reserva)
