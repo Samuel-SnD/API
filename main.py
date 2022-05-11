@@ -233,3 +233,25 @@ async def get_menus(skip : int = 0, limit : int = 100 , db:Session = Depends(get
 @app.post("/menus", response_model = schemas.Menu, tags=["menus"])
 async def create_menu(menu:schemas.MenuCreate, db:Session = Depends(get_db)) :
     return crud.create_menu(db, menu)
+
+@app.get("/mesas/{mesa_id}", response_model = schemas.Mesa, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
+async def get_mesa_by_id(mesa_id:int, db:Session = Depends(get_db), current_user:schemas.Mesa = Depends(get_current_user)) :
+    mesa = crud.get_mesa(db, mesa_id)
+    if mesa is None :
+        raise HTTPException (status_code = 404, detail = "Mesa no encontrada")
+    return mesa
+
+@app.get("/mesas/", response_model = schemas.Mesa, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
+async def get_mesa_by_idComedor(comedor_id:str, db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
+    mesa = crud.get_mesa_by_idComedor(db, comedor_id)
+    if mesa is None :
+        raise HTTPException (status_code = 404, detail = "Mesa no encontrada")
+    return mesa
+
+@app.get("/mesas", response_model = List[schemas.Mesa], responses = {**responses.UNAUTORIZED}, tags=["mesas"])
+async def get_mesas(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Mesa = Depends(get_current_user)) :
+    return crud.get_mesas(db, skip, limit)
+
+@app.post("/mesas", response_model = schemas.Mesa, tags=["mesas"])
+async def create_mesa(mesa:schemas.MesaCreate, db:Session = Depends(get_db)) :
+    return crud.create_mesa(db, mesa)
