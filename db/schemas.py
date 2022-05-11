@@ -2,7 +2,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Json
 
 class ComedorBase (BaseModel):
-    ajustes : str
+    ajustes : Json
 
     class Config :
         orm_mode = True
