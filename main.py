@@ -117,8 +117,8 @@ async def get_user_by_email(user_email:str, db:Session = Depends(get_db), curren
     return user
 
 @app.get("/users/", response_model = List[schemas.Usuario], responses = {**responses.UNAUTORIZED})
-async def get_users(db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    return crud.get_users()
+async def get_users(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+    return crud.get_users(db)
 
 @app.post("/users/", response_model = schemas.Usuario, responses = {**responses.USER_ALREADY_REGISTERED})
 async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) :
