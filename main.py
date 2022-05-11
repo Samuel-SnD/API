@@ -98,18 +98,18 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/users/me", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED})
+@app.get("/users/me", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED},  tags=["users"])
 async def get_current_user(current_user:schemas.Usuario = Depends(get_current_user)) :
     return current_user
 
-@app.get("/users/{user_id}", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND})
+@app.get("/users/{user_id}", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["users"])
 async def get_user_by_id(user_id:int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
     user = crud.get_user(db, user_id)
     if user is None :
         raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
     return user
 
-@app.get("/users/", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND})
+@app.get("/users/", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["users"])
 async def get_user_by_email(user_email:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
     user = crud.get_user_by_email(db, user_email)
     if user is None :
@@ -117,10 +117,10 @@ async def get_user_by_email(user_email:str, db:Session = Depends(get_db), curren
     return user
 
 @app.get("/users", response_model = List[schemas.Usuario], responses = {**responses.UNAUTORIZED})
-async def get_users(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+async def get_users(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user), tags=["users"]) :
     return crud.get_users(db, skip, limit)
 
-@app.post("/users/", response_model = schemas.Usuario, responses = {**responses.USER_ALREADY_REGISTERED})
+@app.post("/users/", response_model = schemas.Usuario, responses = {**responses.USER_ALREADY_REGISTERED}, tags=["users"])
 async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) :
     db_user = crud.get_user_by_email(db, user.correo)
     if db_user:
