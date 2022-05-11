@@ -184,6 +184,7 @@ async def get_menu(menu_id:int, db:Session = Depends(get_db), current_user:schem
         raise HTTPException (status_code = 404, detail = "Menu no encontrado")
     return schemas.Menu(
             id = menu.id,
+            nombre = menu.nombre,
             platos = str(menu.platos),
             bebidas = str(menu.bebidas)
         )
@@ -195,6 +196,19 @@ async def get_menu_by_idComedor(comedor_id:int, db:Session = Depends(get_db), cu
         raise HTTPException (status_code = 404, detail = "Menu no encontrado")
     return schemas.Menu(
             id = menu.id,
+            nombre = menu.nombre,
+            platos = str(menu.platos),
+            bebidas = str(menu.bebidas)
+        )
+
+@app.get("/menus/{cmenu_id}", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
+async def get_menu_by_name(cmenu_id:int, db:Session = Depends(get_db), current_user:schemas.Menu = Depends(get_current_user)) :
+    menu = crud.get_menu_by_name(db, cmenu_id)
+    if menu is None :
+        raise HTTPException (status_code = 404, detail = "Menu no encontrado")
+    return schemas.Menu(
+            id = menu.id,
+            nombre = menu.nombre,
             platos = str(menu.platos),
             bebidas = str(menu.bebidas)
         )
@@ -206,6 +220,7 @@ async def get_menus(skip : int = 0, limit : int = 100 , db:Session = Depends(get
     for menu in menus :
         menus_return.append(schemas.Menu(
             id = menu.id,
+            nombre = menu.nombre,
             platos = str(menu.platos),
             bebidas = str(menu.bebidas)
         ))

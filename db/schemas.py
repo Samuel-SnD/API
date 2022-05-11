@@ -28,7 +28,7 @@ class Administrador (AdministradorBase) :
     id : int
 
 class MenuBase (BaseModel) :
-    nombre : str
+    nombre : int
     platos : str
     bebidas : str
 
