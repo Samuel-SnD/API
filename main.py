@@ -186,7 +186,8 @@ async def get_menu(menu_id:int, db:Session = Depends(get_db), current_user:schem
             id = menu.id,
             nombre = menu.nombre,
             platos = str(menu.platos),
-            bebidas = str(menu.bebidas)
+            bebidas = str(menu.bebidas),
+            idComedor = menu.idComedor
         )
 
 @app.get("/menus/{comedor_id}", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
@@ -198,7 +199,8 @@ async def get_menu_by_idComedor(comedor_id:int, db:Session = Depends(get_db), cu
             id = menu.id,
             nombre = menu.nombre,
             platos = str(menu.platos),
-            bebidas = str(menu.bebidas)
+            bebidas = str(menu.bebidas),
+            idComedor = menu.idComedor
         )
 
 @app.get("/menus/{cmenu_id}", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
@@ -210,7 +212,8 @@ async def get_menu_by_name(cmenu_id:int, db:Session = Depends(get_db), current_u
             id = menu.id,
             nombre = menu.nombre,
             platos = str(menu.platos),
-            bebidas = str(menu.bebidas)
+            bebidas = str(menu.bebidas),
+            idComedor = menu.idComedor
         )
 
 @app.get("/menus", response_model = List[schemas.Menu], responses = {**responses.UNAUTORIZED}, tags=["menus"])
@@ -222,7 +225,8 @@ async def get_menus(skip : int = 0, limit : int = 100 , db:Session = Depends(get
             id = menu.id,
             nombre = menu.nombre,
             platos = str(menu.platos),
-            bebidas = str(menu.bebidas)
+            bebidas = str(menu.bebidas),
+            idComedor = menu.idComedor
         ))
     return menus_return
 
