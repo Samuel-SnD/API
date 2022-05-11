@@ -203,7 +203,7 @@ async def get_menu_by_idComedor(comedor_id:int, db:Session = Depends(get_db), cu
             idComedor = menu.idComedor
         )
 
-@app.get("/menus/{menu_nombre}", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
+@app.get("/menus/", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
 async def get_menu_by_name(menu_nombre:int, db:Session = Depends(get_db), current_user:schemas.Menu = Depends(get_current_user)) :
     menu = crud.get_menu_by_name(db, menu_nombre)
     if menu is None :
