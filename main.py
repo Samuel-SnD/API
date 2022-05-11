@@ -157,11 +157,21 @@ async def get_comedor_by_id(comedor_id:int, db:Session = Depends(get_db), curren
     comedor = crud.get_comedor(db, comedor_id)
     if comedor is None :
         raise HTTPException (status_code = 404, detail = "Comedor no encontrado")
-    return comedor
+    return schemas.Comedor(
+            id = comedor.id,
+            ajustes = str(comedor.ajustes)
+        )
 
 @app.get("/comedores", response_model = List[schemas.Comedor], responses = {**responses.UNAUTORIZED}, tags=["comedores"])
 async def get_comedores(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
-    return crud.get_comedores(db, skip, limit)
+    comedores = crud.get_comedores(db, skip, limit)
+    comedores_return = []
+    for comedor in comedores :
+        comedores_return.append(schemas.Comedor(
+            id = comedor.id,
+            ajustes = str(comedor.ajustes)
+        ))
+    return comedores_return
 
 @app.post("/comedores", response_model = schemas.Comedor, tags=["comedores"])
 async def create_comedor(comedor:schemas.ComedorCreate, db:Session = Depends(get_db)) :
