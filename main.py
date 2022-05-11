@@ -207,7 +207,7 @@ async def get_menu_by_idComedor(comedor_id:int, db:Session = Depends(get_db), cu
 async def get_menu_by_name(menu_nombre:int, db:Session = Depends(get_db), current_user:schemas.Menu = Depends(get_current_user)) :
     menu = crud.get_menu_by_name(db, menu_nombre)
     if menu is None :
-        raise HTTPException (status_code = 404, detail = "Menu no encontrado")
+        raise HTTPException (status_code = 404, detail = f"Menu no encontrado: {menu_nombre}")
     return schemas.Menu(
             id = menu.id,
             nombre = menu.nombre,
