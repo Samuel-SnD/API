@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.types import JSON
 from .database import Base
 
 admin_comedor = Table ('Admin_Comedor', Base.metadata,
@@ -12,7 +12,7 @@ class Comedor(Base):
     __tablename__ = "Comedor"
 
     id = Column(Integer, primary_key = True, index = True, autoincrement = True, nullable = False)
-    ajustes = Column(String, nullable = False)
+    ajustes = Column(JSON, nullable = False)
     administradores = relationship("Administrador", secondary=admin_comedor)
 
 class Administrador(Base):
@@ -30,8 +30,8 @@ class Menu(Base):
 
     id = Column(Integer, primary_key = True, index = True, autoincrement = True, nullable = False)
     nombre = Column(Integer, index = True, nullable = False)
-    platos = Column(String, nullable = False)
-    bebidas = Column(String, nullable = False)
+    platos = Column(JSON, nullable = False)
+    bebidas = Column(JSON, nullable = False)
     idComedor = Column(Integer, ForeignKey("Comedor.id"), primary_key = True, nullable = False)
 
 class Usuario(Base):

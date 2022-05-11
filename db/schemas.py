@@ -1,8 +1,8 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Json
 
 class ComedorBase (BaseModel):
-    ajustes : str
+    ajustes : Json
 
     class Config :
         orm_mode = True
@@ -29,8 +29,8 @@ class Administrador (AdministradorBase) :
 
 class MenuBase (BaseModel) :
     nombre : str
-    platos : str
-    bebidas : str
+    platos : Json
+    bebidas : Json
 
     class Config :
         orm_mode = True
