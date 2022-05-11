@@ -50,9 +50,6 @@ def create_comedor(db: Session, comedor : schemas.ComedorCreate):
 def get_menu (db : Session, menu_id : int) :
     return db.query(models.Menu).filter(models.Menu.id == menu_id).first()
 
-def get_menu_by_name (db : Session, menu_name : int) :
-    return db.query(models.Menu).filter(models.Menu.id == menu_name).first()
-
 def get_menu_by_idComedor (db : Session, id_comedor : int) :
     return db.query(models.Menu).filter(models.Menu.idComedor == id_comedor).first()
 

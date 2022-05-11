@@ -29,8 +29,8 @@ class Administrador (AdministradorBase) :
 
 class MenuBase (BaseModel) :
     nombre : str
-    platos : Json
-    bebidas : Json
+    platos : str
+    bebidas : str
 
     class Config :
         orm_mode = True

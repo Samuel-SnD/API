@@ -176,3 +176,41 @@ async def get_comedores(skip : int = 0, limit : int = 100 , db:Session = Depends
 @app.post("/comedores", response_model = schemas.Comedor, tags=["comedores"])
 async def create_comedor(comedor:schemas.ComedorCreate, db:Session = Depends(get_db)) :
     return crud.create_comedor(db, comedor)
+
+@app.get("/menus/{menu_id}", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
+async def get_menu(menu_id:int, db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
+    menu = crud.get_menu(db, menu_id)
+    if menu is None :
+        raise HTTPException (status_code = 404, detail = "Menu no encontrado")
+    return schemas.Menu(
+            id = menu.id,
+            platos = str(menu.platos),
+            bebidas = str(menu.bebidas)
+        )
+
+@app.get("/menus/{comedor_id}", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
+async def get_menu_by_idComedor(comedor_id:int, db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
+    menu = crud.get_menu_by_idComedor(db, comedor_id)
+    if menu is None :
+        raise HTTPException (status_code = 404, detail = "Menu no encontrado")
+    return schemas.Menu(
+            id = menu.id,
+            platos = str(menu.platos),
+            bebidas = str(menu.bebidas)
+        )
+
+@app.get("/menus", response_model = List[schemas.Menu], responses = {**responses.UNAUTORIZED}, tags=["menus"])
+async def get_menus(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Menu = Depends(get_current_user)) :
+    menus = crud.get_menus(db, skip, limit)
+    menus_return = []
+    for menu in menus :
+        menus_return.append(schemas.Menu(
+            id = menu.id,
+            platos = str(menu.platos),
+            bebidas = str(menu.bebidas)
+        ))
+    return menus_return
+
+@app.post("/menus", response_model = schemas.Menu, tags=["menus"])
+async def create_menu(menu:schemas.MenuCreate, db:Session = Depends(get_db)) :
+    return crud.create_menu(db, menu)
