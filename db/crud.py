@@ -42,6 +42,10 @@ def get_comedor (db : Session, comedor_id : int) :
 def get_comedores (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Comedor).offset(skip).limit(limit).all()
 
+def delete_comedor (db : Session, comedor : int) :
+    db.delete(get_user(db, comedor))
+    db.commit()
+
 def create_comedor(db: Session, comedor : schemas.ComedorCreate):
     db_comedor = models.Comedor(ajustes = comedor.ajustes)
     db.add(db_comedor)
@@ -63,6 +67,10 @@ def get_menu_by_idComedor (db : Session, id_comedor : int) :
 def get_menus (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Menu).offset(skip).limit(limit).all()
 
+def delete_menu (db : Session, menu : int) :
+    db.delete(get_user(db, menu))
+    db.commit()
+
 def create_menu(db: Session, menu : schemas.MenuCreate):
     db_menu = models.Menu(nombre = menu.nombre, platos = menu.platos, bebidas = menu.bebidas, idComedor = menu.idComedor)
     db.add(db_menu)
@@ -80,6 +88,10 @@ def get_mesa_by_idComedor (db : Session, id_comedor : int) :
 
 def get_mesas (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Mesa).offset(skip).limit(limit).all()
+
+def delete_mesa (db : Session, mesa : int) :
+    db.delete(get_user(db, mesa))
+    db.commit()
 
 def create_mesa(db: Session, mesa : schemas.MesaCreate):
     db_mesa = models.Mesa(asientos = mesa.asientos, idComedor = mesa.idComedor)
@@ -104,6 +116,10 @@ def get_reserva_by_mesa (db : Session, mesa : int) :
 
 def get_reservas (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Reserva).offset(skip).limit(limit).all()
+
+def delete_reserva (db : Session, reserva : int) :
+    db.delete(get_user(db, reserva))
+    db.commit()
 
 def create_reserva(db: Session, reserva : schemas.ReservaCreate, usuario : schemas.Usuario):
     db_reserva = models.Reserva(mesa = reserva.mesa, usuario = usuario.id, fecha = reserva.fecha)
