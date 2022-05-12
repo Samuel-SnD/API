@@ -98,6 +98,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+#Usuarios
+
 @app.get("/users/me", response_model = schemas.Usuario, responses = {**responses.UNAUTORIZED},  tags=["users"])
 async def get_current_user(current_user:schemas.Usuario = Depends(get_current_user)) :
     return current_user
@@ -127,6 +129,8 @@ async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) 
         raise HTTPException (status_code = 400, detail = "Usuario ya registrado")
     return crud.create_user(db, user)
 
+#Administradores
+
 @app.get("/admins/{admin_id}", response_model = schemas.Administrador, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["admins"])
 async def get_admin_by_id(admin_id:int, db:Session = Depends(get_db), current_user:schemas.Administrador = Depends(get_current_user)) :
     admin = crud.get_admin(db, admin_id)
@@ -151,6 +155,8 @@ async def create_admin(admin:schemas.AdministradorCreate, db:Session = Depends(g
     if db_admin:
         raise HTTPException (status_code = 400, detail = "Administrador ya registrado")
     return crud.create_admin(db, admin)
+
+#Comedores
 
 @app.get("/comedores/{comedor_id}", response_model = schemas.Comedor, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["comedores"])
 async def get_comedor_by_id(comedor_id:int, db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
@@ -189,6 +195,8 @@ async def get_menu(menu_id:int, db:Session = Depends(get_db), current_user:schem
             bebidas = str(menu.bebidas),
             idComedor = menu.idComedor
         )
+
+#Menus
 
 @app.get("/menus/{comedor_id}", response_model = schemas.Menu, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
 async def get_menu_by_idComedor(comedor_id:int, db:Session = Depends(get_db), current_user:schemas.Comedor = Depends(get_current_user)) :
@@ -234,6 +242,8 @@ async def get_menus(skip : int = 0, limit : int = 100 , db:Session = Depends(get
 async def create_menu(menu:schemas.MenuCreate, db:Session = Depends(get_db)) :
     return crud.create_menu(db, menu)
 
+#Mesas
+
 @app.get("/mesas/{mesa_id}", response_model = schemas.Mesa, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
 async def get_mesa_by_id(mesa_id:int, db:Session = Depends(get_db), current_user:schemas.Mesa = Depends(get_current_user)) :
     mesa = crud.get_mesa(db, mesa_id)
@@ -255,6 +265,8 @@ async def get_mesas(skip : int = 0, limit : int = 100 , db:Session = Depends(get
 @app.post("/mesas", response_model = schemas.Mesa, tags=["mesas"])
 async def create_mesa(mesa:schemas.MesaCreate, db:Session = Depends(get_db)) :
     return crud.create_mesa(db, mesa)
+
+#Reservas
 
 @app.get("/reservas/{reserva_id}", response_model = schemas.Reserva, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
 async def get_reserva_by_id(reserva_id:int, db:Session = Depends(get_db), current_user:schemas.Reserva = Depends(get_current_user)) :

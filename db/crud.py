@@ -2,6 +2,8 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from . import models, schemas
 
+#Administradores
+
 def get_admin (db : Session, admin_id : int) :
     return db.query(models.Administrador).filter(models.Administrador.id == admin_id).first()
 
@@ -17,6 +19,8 @@ def create_admin(db: Session, admin : schemas.AdministradorCreate):
     db.commit()
     db.refresh(db_admin)
     return db_admin
+
+#Usuarios
 
 def get_user (db : Session, user_id : int) :
     return db.query(models.Usuario).filter(models.Usuario.id == user_id).first()
@@ -34,6 +38,8 @@ def create_user(db: Session, user : schemas.UsuarioCreate):
     db.refresh(db_user)
     return db_user
 
+#Comedores
+
 def get_comedor (db : Session, comedor_id : int) :
     return db.query(models.Comedor).filter(models.Comedor.id == comedor_id).first()
 
@@ -46,6 +52,8 @@ def create_comedor(db: Session, comedor : schemas.ComedorCreate):
     db.commit()
     db.refresh(db_comedor)
     return db_comedor
+
+#Menus
 
 def get_menu (db : Session, menu_id : int) :
     return db.query(models.Menu).filter(models.Menu.id == menu_id).first()
@@ -66,6 +74,8 @@ def create_menu(db: Session, menu : schemas.MenuCreate):
     db.refresh(db_menu)
     return db_menu
 
+#Mesas
+
 def get_mesa (db : Session, mesa_id : int) :
     return db.query(models.Mesa).filter(models.Mesa.id == mesa_id).first()
 
@@ -81,6 +91,8 @@ def create_mesa(db: Session, mesa : schemas.MesaCreate):
     db.commit()
     db.refresh(db_mesa)
     return db_mesa
+
+#Reservas
 
 def get_reserva (db : Session, reserva_id : int) :
     return db.query(models.Reserva).filter(models.Reserva.id == reserva_id).first()
