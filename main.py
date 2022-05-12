@@ -324,12 +324,12 @@ async def create_reserva(reserva:schemas.ReservaCreate, db:Session = Depends(get
     return crud.create_reserva(db, reserva, current_user)
 
 @app.delete("/reservas/{reserva_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
-async def delete_reserva(reserva : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    reserva = crud.get_reserva(db, reserva)
+async def delete_reserva(reservaid : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+    reserva = crud.get_reserva(db, reservaid)
     if not  reserva:
         raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
     if not current_user.is_Admin == 1 or not current_user.id == reserva.usuario : 
         raise HTTPException (status_code = 401, detail = "No tienes suficientes permisos")
-    crud.delete_reserva(db, reserva)
+    crud.delete_reserva(db, reservaid)
 
 #endregion
