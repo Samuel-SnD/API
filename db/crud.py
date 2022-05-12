@@ -13,7 +13,7 @@ def get_user_by_email (db : Session, email : str) :
 def get_users (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Usuario).offset(skip).limit(limit).all()
 
-def get_admins (db : Session) :
+def get_admins (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Usuario).filter(models.Usuario.is_Admin == 1).all()
 
 def make_admin (db : Session, email : str) :
