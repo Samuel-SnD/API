@@ -143,7 +143,11 @@ async def make_admin(email : str, db:Session = Depends(get_db), current_user:sch
     if not crud.make_admin(db, email) :
         raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
 
-
+@app.delete("/users/{user_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["users"])
+async def delete_user(user : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    if not crud.get_user(db, user) :
+        raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
+    crud.delete_user(db, user)
 
 #endregion
 
