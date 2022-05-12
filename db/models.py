@@ -1,3 +1,4 @@
+from email.policy import default
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import JSON
@@ -32,7 +33,7 @@ class Usuario(Base):
     apellidos = Column(String, nullable = False)
     correo = Column(String, nullable = False)
     contraseña = Column(String, nullable = False)
-    is_Admin = Column(Integer, nullable = False)
+    is_Admin = Column(Integer, nullable = False, default = 0)
     comedores = relationship("Comedor", secondary = admin_comedor)
 
 class Mesa(Base):
