@@ -5,7 +5,7 @@ from .database import Base
 
 admin_comedor = Table ('Admin_Comedor', Base.metadata,
     Column('idComedor', ForeignKey('Comedor.id'), primary_key=True, nullable = False),
-    Column('idAdministrador', ForeignKey('Administrador.id'), primary_key=True, nullable = False)
+    Column('idAdministrador', ForeignKey('Usuario.id'), primary_key=True, nullable = False)
     )
 
 class Comedor(Base):
@@ -13,17 +13,7 @@ class Comedor(Base):
 
     id = Column(Integer, primary_key = True, index = True, autoincrement = True, nullable = False)
     ajustes = Column(JSON, nullable = False)
-    administradores = relationship("Administrador", secondary=admin_comedor)
-
-class Administrador(Base):
-    __tablename__ = "Administrador"
-
-    id = Column(Integer, primary_key = True, index = True, autoincrement = True, nullable = False)
-    nombre = Column(String, nullable = False)
-    apellidos = Column(String, nullable = False)
-    correo = Column(String, nullable = False)
-    contraseña = Column(String, nullable = False)
-    comedores = relationship("Comedor", secondary=admin_comedor)
+    administradores = relationship("Usuario", secondary = admin_comedor)
 
 class Menu(Base):
     __tablename__ = "Menu"
@@ -42,6 +32,8 @@ class Usuario(Base):
     apellidos = Column(String, nullable = False)
     correo = Column(String, nullable = False)
     contraseña = Column(String, nullable = False)
+    is_Admin = Column(Integer, nullable = False)
+    comedores = relationship("Comedor", secondary = admin_comedor)
 
 class Mesa(Base):
     __tablename__ = "Mesa"

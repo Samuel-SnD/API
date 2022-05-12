@@ -83,6 +83,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     return user
 
+async def get_current_admin(user : schemas.Usuario = Depends(get_current_user)) :
+    if user.is_Admin is not 1 :
+        raise HTTPException (status_code = 401, detail = "No tienes suficientes permisos")
+
 @app.post("/token", response_model=schemas.Token, responses={**responses.UNAUTORIZED}, tags=["auth"])
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(form_data.username, form_data.password, db)
@@ -118,6 +122,10 @@ async def get_user_by_email(user_email:str, db:Session = Depends(get_db), curren
         raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
     return user
 
+@app.get("/users/admins", response_model = List[schemas.Usuario], responses = {**responses.UNAUTORIZED}, tags=["users"])
+async def get_admins(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    return crud.get_admins(db, skip, limit)
+
 @app.get("/users", response_model = List[schemas.Usuario], responses = {**responses.UNAUTORIZED}, tags=["users"])
 async def get_users(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
     return crud.get_users(db, skip, limit)
@@ -128,35 +136,6 @@ async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) 
     if db_user:
         raise HTTPException (status_code = 400, detail = "Usuario ya registrado")
     return crud.create_user(db, user)
-
-#endregion
-
-#region Administradores
-
-@app.get("/admins/{admin_id}", response_model = schemas.Administrador, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["admins"])
-async def get_admin_by_id(admin_id:int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    admin = crud.get_admin(db, admin_id)
-    if admin is None :
-        raise HTTPException (status_code = 404, detail = "Administrador no encontrado")
-    return admin
-
-@app.get("/admins/", response_model = schemas.Administrador, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["admins"])
-async def get_admin_by_email(admin_email:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    admin = crud.get_admin_by_email(db, admin_email)
-    if admin is None :
-        raise HTTPException (status_code = 404, detail = "Administrador no encontrado")
-    return admin
-
-@app.get("/admins", response_model = List[schemas.Administrador], responses = {**responses.UNAUTORIZED}, tags=["admins"])
-async def get_admins(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    return crud.get_admins(db, skip, limit)
-
-@app.post("/admins", response_model = schemas.Administrador, responses = {**responses.USER_ALREADY_REGISTERED}, tags=["admins"])
-async def create_admin(admin:schemas.AdministradorCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    db_admin = crud.get_admin_by_email(db, admin.correo)
-    if db_admin:
-        raise HTTPException (status_code = 400, detail = "Administrador ya registrado")
-    return crud.create_admin(db, admin)
 
 #endregion
 
@@ -184,7 +163,7 @@ async def get_comedores(skip : int = 0, limit : int = 100 , db:Session = Depends
     return comedores_return
 
 @app.post("/comedores", response_model = schemas.Comedor, tags=["comedores"])
-async def create_comedor(comedor:schemas.ComedorCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+async def create_comedor(comedor:schemas.ComedorCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     return crud.create_comedor(db, comedor)
 
 #endregion
@@ -245,7 +224,7 @@ async def get_menus(skip : int = 0, limit : int = 100 , db:Session = Depends(get
     return menus_return
 
 @app.post("/menus", response_model = schemas.Menu, tags=["menus"])
-async def create_menu(menu:schemas.MenuCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+async def create_menu(menu:schemas.MenuCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     return crud.create_menu(db, menu)
 
 #endregion
@@ -271,7 +250,7 @@ async def get_mesas(skip : int = 0, limit : int = 100 , db:Session = Depends(get
     return crud.get_mesas(db, skip, limit)
 
 @app.post("/mesas", response_model = schemas.Mesa, tags=["mesas"])
-async def create_mesa(mesa:schemas.MesaCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+async def create_mesa(mesa:schemas.MesaCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     return crud.create_mesa(db, mesa)
 
 #endregion
@@ -312,6 +291,6 @@ async def get_reservas(skip : int = 0, limit : int = 100 , db:Session = Depends(
 
 @app.post("/reservas", response_model = schemas.Reserva, tags=["reservas"])
 async def create_reserva(reserva:schemas.ReservaCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    return crud.create_reserva(db, reserva)
+    return crud.create_reserva(db, reserva, current_user)
 
 #endregion

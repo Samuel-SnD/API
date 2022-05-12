@@ -2,25 +2,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from . import models, schemas
 
-#Administradores
-
-def get_admin (db : Session, admin_id : int) :
-    return db.query(models.Administrador).filter(models.Administrador.id == admin_id).first()
-
-def get_admin_by_email (db : Session, email : str) :
-    return db.query(models.Administrador).filter(models.Administrador.correo == email).first()
-
-def get_admins (db : Session, skip : int = 0, limit : int = 100) :
-    return db.query(models.Administrador).offset(skip).limit(limit).all()
-
-def create_admin(db: Session, admin : schemas.AdministradorCreate):
-    db_admin = models.Administrador(correo = admin.correo, nombre = admin.nombre, apellidos = admin.apellidos, contraseña = admin.contraseña)
-    db.add(db_admin)
-    db.commit()
-    db.refresh(db_admin)
-    return db_admin
-
-#Usuarios
+#Usuarios && Admin
 
 def get_user (db : Session, user_id : int) :
     return db.query(models.Usuario).filter(models.Usuario.id == user_id).first()
@@ -30,6 +12,13 @@ def get_user_by_email (db : Session, email : str) :
 
 def get_users (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Usuario).offset(skip).limit(limit).all()
+
+def get_admins (db : Session) :
+    return db.query(models.Usuario).filter(models.Usuario.is_Admin == 1).all()
+
+def make_admin (db : Session, email : str) :
+    user : models.Usuario = db.query(models.Usuario).filter(models.Usuario.correo == email).first()
+    user.is_Admin == 1
 
 def create_user(db: Session, user : schemas.UsuarioCreate):
     db_user = models.Usuario(correo = user.correo, nombre = user.nombre, apellidos = user.apellidos, contraseña = user.contraseña)
@@ -109,8 +98,8 @@ def get_reserva_by_mesa (db : Session, mesa : int) :
 def get_reservas (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Reserva).offset(skip).limit(limit).all()
 
-def create_reserva(db: Session, reserva : schemas.ReservaCreate):
-    db_reserva = models.Reserva(mesa = reserva.mesa, usuario = reserva.usuario, fecha = reserva.fecha)
+def create_reserva(db: Session, reserva : schemas.ReservaCreate, usuario : schemas.Usuario):
+    db_reserva = models.Reserva(mesa = reserva.mesa, usuario = usuario.id, fecha = reserva.fecha)
     db.add(db_reserva)
     db.commit()
     db.refresh(db_reserva)

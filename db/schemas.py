@@ -14,20 +14,6 @@ class ComedorCreate (ComedorBase) :
 class Comedor (ComedorBase) :
     id : int
 
-class AdministradorBase (BaseModel) :
-    nombre : str
-    apellidos : str
-    correo : str
-
-    class Config :
-        orm_mode = True
-
-class AdministradorCreate (AdministradorBase) :
-    contraseña : str
-
-class Administrador (AdministradorBase) :
-    id : int
-
 class MenuBase (BaseModel) :
     nombre : int
     platos : str
@@ -58,7 +44,6 @@ class Mesa (MesaBase) :
 
 class ReservaBase (BaseModel) :
     mesa : int
-    usuario : int
     fecha : date
 
     class Config :
@@ -69,11 +54,13 @@ class ReservaCreate (ReservaBase) :
 
 class Reserva (ReservaBase) :
     id : int
+    usuario : int
 
 class UsuarioBase (BaseModel) :
     nombre : str
     apellidos : str
     correo : str
+    is_Admin : int
 
     class Config :
         orm_mode = True
