@@ -1,3 +1,4 @@
+from curses.ascii import HT
 import os
 from datetime import datetime, timedelta
 from typing import List, Optional
@@ -136,6 +137,13 @@ async def create_user(user:schemas.UsuarioCreate, db:Session = Depends(get_db)) 
     if db_user:
         raise HTTPException (status_code = 400, detail = "Usuario ya registrado")
     return crud.create_user(db, user)
+
+@app.put("/makeadmin/", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["users"])
+async def make_admin(email : str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    if not crud.make_admin(db, email) :
+        raise HTTPException (status_code = 404, detail = "Usuario no encontrado")
+
+
 
 #endregion
 
