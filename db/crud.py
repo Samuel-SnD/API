@@ -25,6 +25,7 @@ def make_admin (db : Session, email : str) :
 
 def delete_user (db : Session, user : int) :
     db.delete(get_user(db, user))
+    db.commit()
 
 def create_user(db: Session, user : schemas.UsuarioCreate):
     db_user = models.Usuario(correo = user.correo, nombre = user.nombre, apellidos = user.apellidos, contraseña = user.contraseña)
