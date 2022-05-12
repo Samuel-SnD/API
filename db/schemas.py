@@ -60,7 +60,6 @@ class UsuarioBase (BaseModel) :
     nombre : str
     apellidos : str
     correo : str
-    is_Admin : int
 
     class Config :
         orm_mode = True
@@ -70,6 +69,7 @@ class UsuarioCreate (UsuarioBase) :
 
 class Usuario (UsuarioBase) :
     id : int
+    is_Admin : int
 
 class Token(BaseModel):
     access_token: str
