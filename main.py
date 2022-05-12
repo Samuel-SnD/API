@@ -288,7 +288,7 @@ async def create_mesa(mesa:schemas.MesaCreate, db:Session = Depends(get_db), cur
     return crud.create_mesa(db, mesa)
 
 @app.put("/mesas/{mesa_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
-async def update_mesa(mesa_id : int, me : schemas.MenuCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+async def update_mesa(mesa_id : int, me : schemas.MesaCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     if not crud.update_mesa(db, mesa_id, me) :
         raise HTTPException (status_code = 404, detail = "Mesa no encontrado")
 
