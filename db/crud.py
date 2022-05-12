@@ -19,7 +19,7 @@ def get_admins (db : Session, skip : int = 0, limit : int = 100) :
 def make_admin (db : Session, email : str) :
     user : models.Usuario = db.query(models.Usuario).filter(models.Usuario.correo == email).first()
     if user is None : return False
-    user.is_Admin == 1
+    user.is_Admin = 1
     db.commit()
     return True
 
