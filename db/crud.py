@@ -53,6 +53,13 @@ def create_comedor(db: Session, comedor : schemas.ComedorCreate):
     db.refresh(db_comedor)
     return db_comedor
 
+def update_comedor (db : Session, id : int, ajustes : schemas.ComedorCreate) :
+    comedor : models.Comedor = db.query(models.Comedor).filter(models.Comedor.id == id).first()
+    if comedor is None : return False
+    comedor.ajustes = ajustes.ajustes
+    db.commit()
+    return True
+
 #Menus
 
 def get_menu (db : Session, menu_id : int) :
@@ -78,6 +85,15 @@ def create_menu(db: Session, menu : schemas.MenuCreate):
     db.refresh(db_menu)
     return db_menu
 
+def update_menu (db : Session, id : int, menu : schemas.MenuCreate) :
+    mn : models.Menu = db.query(models.Menu).filter(models.Menu.id == id).first()
+    if mn is None : return False
+    mn.nombre = menu.nombre
+    mn.bebidas = menu.bebidas
+    mn.platos = menu.platos
+    db.commit()
+    return True
+
 #Mesas
 
 def get_mesa (db : Session, mesa_id : int) :
@@ -99,6 +115,13 @@ def create_mesa(db: Session, mesa : schemas.MesaCreate):
     db.commit()
     db.refresh(db_mesa)
     return db_mesa
+
+def update_mesa (db : Session, id : int, mesa : schemas.MesaCreate) :
+    ms : models.Mesa = db.query(models.Mesa).filter(models.Mesa.id == id).first()
+    if ms is None : return False
+    ms.asientos = mesa.asientos
+    db.commit()
+    return True
 
 #Reservas
 

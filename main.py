@@ -178,6 +178,11 @@ async def get_comedores(skip : int = 0, limit : int = 100 , db:Session = Depends
 async def create_comedor(comedor:schemas.ComedorCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     return crud.create_comedor(db, comedor)
 
+@app.put("/comedores/{comedor_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["comedores"])
+async def update_comedor(comedor_id : int, cm : schemas.ComedorCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    if not crud.update_comedor(db, comedor_id, cm) :
+        raise HTTPException (status_code = 404, detail = "Comedor no encontrado")
+
 @app.delete("/comedores/{comedor_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["comedores"])
 async def delete_comedor(comedor : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     if not crud.get_comedor(db, comedor) :
@@ -245,6 +250,11 @@ async def get_menus(skip : int = 0, limit : int = 100 , db:Session = Depends(get
 async def create_menu(menu:schemas.MenuCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     return crud.create_menu(db, menu)
 
+@app.put("/menus/{menu_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
+async def update_menu(menu_id : int, m : schemas.MenuCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    if not crud.update_menu(db, menu_id, m) :
+        raise HTTPException (status_code = 404, detail = "Menu no encontrado")
+
 @app.delete("/menus/{menu_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
 async def delete_menu(menu : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     if not crud.get_menu(db, menu) :
@@ -276,6 +286,11 @@ async def get_mesas(skip : int = 0, limit : int = 100 , db:Session = Depends(get
 @app.post("/mesas", response_model = schemas.Mesa, tags=["mesas"])
 async def create_mesa(mesa:schemas.MesaCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     return crud.create_mesa(db, mesa)
+
+@app.put("/mesas/{mesa_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
+async def update_mesa(mesa_id : int, me : schemas.MenuCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    if not crud.update_mesa(db, mesa_id, me) :
+        raise HTTPException (status_code = 404, detail = "Mesa no encontrado")
 
 @app.delete("/mesas/{mesa_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
 async def delete_mesa(mesa : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :

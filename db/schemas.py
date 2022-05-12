@@ -18,12 +18,13 @@ class MenuBase (BaseModel) :
     nombre : int
     platos : str
     bebidas : str
+    idComedor : int
 
     class Config :
         orm_mode = True
 
 class MenuCreate (MenuBase) :
-    idComedor : int
+    pass
 
 class Menu (MenuBase) :
     id : int
@@ -36,11 +37,10 @@ class MesaBase (BaseModel) :
         orm_mode = True
 
 class MesaCreate (MesaBase) :
-    idComedor : int
+    pass
 
 class Mesa (MesaBase) :
     id : int
-    idComedor : int
 
 class ReservaBase (BaseModel) :
     mesa : int
