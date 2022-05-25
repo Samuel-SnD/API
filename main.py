@@ -85,7 +85,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     return user
 
 async def get_current_admin(user : schemas.Usuario = Depends(get_current_user)) :
-    if user.is_Admin is not 1 :
+    if user.is_Admin != 1 :
         raise HTTPException (status_code = 401, detail = "No tienes suficientes permisos")
 
 @app.post("/token", response_model=schemas.Token, responses={**responses.UNAUTORIZED}, tags=["auth"])
