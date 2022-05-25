@@ -272,7 +272,7 @@ async def get_mesa_by_id(mesa_id:int, db:Session = Depends(get_db), current_user
         raise HTTPException (status_code = 404, detail = "Mesa no encontrada")
     return mesa
 
-@app.get("/mesas/", response_model = schemas.Mesa, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
+@app.get("/mesas/", response_model = List[schemas.Mesa], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
 async def get_mesa_by_idComedor(comedor_id:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
     return crud.get_mesa_by_idComedor(db, comedor_id)
 
