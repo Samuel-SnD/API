@@ -69,7 +69,7 @@ def get_menu_by_name (db : Session, menu_name : int) :
     return db.query(models.Menu).filter(models.Menu.nombre == menu_name).first()
 
 def get_menu_by_idComedor (db : Session, id_comedor : int) :
-    return db.query(models.Menu).filter(models.Menu.idComedor == id_comedor).first()
+    return db.query(models.Menu).filter(models.Menu.idComedor == id_comedor).all()
 
 def get_menus (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Menu).offset(skip).limit(limit).all()
@@ -100,7 +100,7 @@ def get_mesa (db : Session, mesa_id : int) :
     return db.query(models.Mesa).filter(models.Mesa.id == mesa_id).first()
 
 def get_mesa_by_idComedor (db : Session, id_comedor : int) :
-    return db.query(models.Mesa).filter(models.Mesa.idComedor == id_comedor).first()
+    return db.query(models.Mesa).filter(models.Mesa.idComedor == id_comedor).all()
 
 def get_mesas (db : Session, skip : int = 0, limit : int = 100) :
     return db.query(models.Mesa).offset(skip).limit(limit).all()
