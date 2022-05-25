@@ -337,7 +337,7 @@ async def delete_reserva(reservaid : int, db:Session = Depends(get_db), current_
     reserva = crud.get_reserva(db, reservaid)
     if not  reserva:
         raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
-    if not current_user.is_Admin == 1 or not current_user.id == reserva.usuario : 
+    if not (current_user.is_Admin == 1 or current_user.id == reserva.usuario) : 
         raise HTTPException (status_code = 401, detail = "No tienes suficientes permisos")
     crud.delete_reserva(db, reservaid)
 
