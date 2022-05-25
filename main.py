@@ -274,10 +274,7 @@ async def get_mesa_by_id(mesa_id:int, db:Session = Depends(get_db), current_user
 
 @app.get("/mesas/", response_model = schemas.Mesa, responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
 async def get_mesa_by_idComedor(comedor_id:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    mesa = crud.get_mesa_by_idComedor(db, comedor_id)
-    if mesa is None :
-        raise HTTPException (status_code = 404, detail = "Mesa no encontrada")
-    return mesa
+    return crud.get_mesa_by_idComedor(db, comedor_id)
 
 @app.get("/mesas", response_model = List[schemas.Mesa], responses = {**responses.UNAUTORIZED}, tags=["mesas"])
 async def get_mesas(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
@@ -311,10 +308,7 @@ async def get_reserva_by_id(reserva_id:int, db:Session = Depends(get_db), curren
 
 @app.get("/reservas/", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
 async def get_reserva_by_fecha(reserva_fecha:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    reserva = crud.get_reserva_by_fecha(db, reserva_fecha)
-    if reserva is None :
-        raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
-    return reserva
+    return crud.get_reserva_by_fecha(db, reserva_fecha)
 
 @app.get("/reservas/user/{reserva_user}", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
 async def get_reserva_by_user(reserva_user:int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
