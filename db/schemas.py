@@ -45,7 +45,7 @@ class Mesa (MesaBase) :
 class ReservaBase (BaseModel) :
     mesa : int
     fecha : date
-    hora : datetime
+    hora : str
 
     class Config :
         orm_mode = True
