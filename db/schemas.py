@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import List, Optional
 from pydantic import BaseModel, Json
 
@@ -45,6 +45,7 @@ class Mesa (MesaBase) :
 class ReservaBase (BaseModel) :
     mesa : int
     fecha : date
+    hora : datetime
 
     class Config :
         orm_mode = True

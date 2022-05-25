@@ -50,3 +50,4 @@ class Reserva(Base):
     mesa = Column(Integer, primary_key = True, index = True, nullable = False)
     usuario = Column(Integer, primary_key = True, index = True, nullable = False)
     fecha = Column(DateTime, primary_key = True, index = True, nullable = False)
+    hora = Column(DateTime, index = True, nullable = False)
