@@ -24,6 +24,13 @@ ENTITY_NOT_FOUND = {
     }
 }
 
+CONFLICT = {
+    409: {
+        "model": HTTPException,
+        "description": "Entity caused conflict with database."
+    }
+}
+
 INCORRECT_MEDIA_TYPE = {
     415: {
         "model": HTTPException,

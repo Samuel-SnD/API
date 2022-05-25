@@ -131,6 +131,9 @@ def get_reserva (db : Session, reserva_id : int) :
 def get_reserva_by_fecha (db : Session, reserva_fecha : datetime) :
     return db.query(models.Reserva).filter(models.Reserva.fecha == reserva_fecha).all()
 
+def get_reserva_dup (db : Session, reserva_fecha : datetime, reserva_hora : str) :
+    return True if db.query(models.Reserva).filter(models.Reserva.fecha == reserva_fecha and models.Reserva.hora == reserva_hora).first() else False
+
 def get_reserva_by_user (db : Session, user : int) :
     return db.query(models.Reserva).filter(models.Reserva.usuario == user).all()
 

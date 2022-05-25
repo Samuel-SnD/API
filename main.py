@@ -328,8 +328,10 @@ async def get_reserva_by_mesa(reserva_mesa:int, db:Session = Depends(get_db), cu
 async def get_reservas(skip : int = 0, limit : int = 100 , db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
     return crud.get_reservas(db, skip, limit)
 
-@app.post("/reservas", response_model = schemas.Reserva, tags=["reservas"])
+@app.post("/reservas", response_model = schemas.Reserva, responses = {**responses.CONFLICT, **responses.UNAUTORIZED}, tags=["reservas"])
 async def create_reserva(reserva:schemas.ReservaCreate, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+    if crud.get_reserva_dup(db, reserva.fecha, reserva.hora) :
+        raise HTTPException (status_code = 409, detail = "Ya existe una reserva ese dia y hora")
     return crud.create_reserva(db, reserva, current_user)
 
 @app.delete("/reservas/{reserva_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
