@@ -28,10 +28,10 @@ class MenuCreate (MenuBase) :
 
 class Menu (MenuBase) :
     id : int
-    idComedor : int
 
 class MesaBase (BaseModel) :
     asientos : int
+    idComedor : int
 
     class Config :
         orm_mode = True
