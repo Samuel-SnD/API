@@ -145,7 +145,7 @@ def delete_reserva (db : Session, reserva : int) :
     db.commit()
 
 def create_reserva(db: Session, reserva : schemas.ReservaCreate, usuario : schemas.Usuario):
-    db_reserva = models.Reserva(mesa = reserva.mesa, usuario = usuario.id, fecha = reserva.fecha)
+    db_reserva = models.Reserva(mesa = reserva.mesa, usuario = usuario.id, fecha = reserva.fecha, hora = reserva.hora)
     db.add(db_reserva)
     db.commit()
     db.refresh(db_reserva)
