@@ -293,7 +293,10 @@ async def update_mesa(mesa_id : int, me : schemas.MesaCreate, db:Session = Depen
 async def delete_mesa(mesa_id : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
     if not crud.get_mesa(db, mesa_id) :
         raise HTTPException (status_code = 404, detail = "Mesa no encontrada")
-    crud.delete_mesa(db, mesa_id)
+    try :
+        crud.delete_mesa(db, mesa_id)
+    except :
+        raise HTTPException (status_code = 409, detail = "Existen reservas en la mesa")
 
 #endregion
 
@@ -335,12 +338,12 @@ async def create_reserva(reserva:schemas.ReservaCreate, db:Session = Depends(get
     return crud.create_reserva(db, reserva, current_user)
 
 @app.delete("/reservas/{reserva_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
-async def delete_reserva(reservaid : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    reserva = crud.get_reserva(db, reservaid)
+async def delete_reserva(reserva_id : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+    reserva = crud.get_reserva(db, reserva_id)
     if not  reserva:
         raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
     if not (current_user.is_Admin == 1 or current_user.id == reserva.usuario) : 
         raise HTTPException (status_code = 401, detail = "No tienes suficientes permisos")
-    crud.delete_reserva(db, reservaid)
+    crud.delete_reserva(db, reserva_id)
 
 #endregion
