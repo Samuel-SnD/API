@@ -314,14 +314,17 @@ async def get_reserva_by_id(reserva_id:int, db:Session = Depends(get_db), curren
 
 @app.get("/reservas/{reserva_id}/pdf", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
 async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
-    reserva = crud.get_reserva(db, reserva_id)
+    reserva : models.Reserva = crud.get_reserva(db, reserva_id)
     if reserva is None :
         raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size = 15)
-    pdf.cell(200, 10, txt = "GeeksforGeeks", ln = 1, align = 'C')
-    pdf.cell(200, 10, txt = "A Computer Science portal for geeks.", ln = 2, align = 'C')
+    pdf.cell(200, 10, txt = f"Comedor: {reserva.mesa.idComedor}", ln = 1, align = 'C')
+    pdf.cell(200, 10, txt = f"Mesa: {reserva.mesa}", ln = 2, align = 'C')
+    pdf.cell(200, 10, txt = f"Usuario: {current_user.nombre}", ln = 3, align = 'C')
+    pdf.cell(200, 10, txt = f"Fecha: {reserva.fecha}", ln = 4, align = 'C')
+    pdf.cell(200, 10, txt = f"Hora: {reserva.hora}", ln = 5, align = 'C')
     bytes_send = BytesIO(bytes(pdf.output(dest = 'S'), encoding='latin1'))
     return StreamingResponse(iter(bytes_send), media_type = "application/pdf")
     
