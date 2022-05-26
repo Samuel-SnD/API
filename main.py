@@ -323,7 +323,7 @@ async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db), current_
     pdf.cell(200, 10, txt = "GeeksforGeeks", ln = 1, align = 'C')
     pdf.cell(200, 10, txt = "A Computer Science portal for geeks.", ln = 2, align = 'C')
     bytes_send = StringIO()
-    pdf.output(bytes_send)
+    bytes_send.write(pdf.output("S"))
     return StreamingResponse(iter(bytes_send), media_type = "application/pdf")
     
 
