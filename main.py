@@ -1,5 +1,5 @@
 from curses.ascii import HT
-from io import StringIO
+from io import StringIO, BytesIO
 import os
 from datetime import datetime, timedelta
 from typing import List, Optional
@@ -322,8 +322,7 @@ async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db), current_
     pdf.set_font("Arial", size = 15)
     pdf.cell(200, 10, txt = "GeeksforGeeks", ln = 1, align = 'C')
     pdf.cell(200, 10, txt = "A Computer Science portal for geeks.", ln = 2, align = 'C')
-    bytes_send = StringIO()
-    bytes_send.write(pdf.output("S"))
+    bytes_send = BytesIO(bytes(pdf.output(dest = 'S'), encoding='latin1'))
     return StreamingResponse(iter(bytes_send), media_type = "application/pdf")
     
 
