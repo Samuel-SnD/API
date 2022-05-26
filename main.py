@@ -290,10 +290,10 @@ async def update_mesa(mesa_id : int, me : schemas.MesaCreate, db:Session = Depen
         raise HTTPException (status_code = 404, detail = "Mesa no encontrado")
 
 @app.delete("/mesas/{mesa_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["mesas"])
-async def delete_mesa(mesa : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
-    if not crud.get_mesa(db, mesa) :
+async def delete_mesa(mesa_id : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    if not crud.get_mesa(db, mesa_id) :
         raise HTTPException (status_code = 404, detail = "Mesa no encontrada")
-    crud.delete_mesa(db, mesa)
+    crud.delete_mesa(db, mesa_id)
 
 #endregion
 
