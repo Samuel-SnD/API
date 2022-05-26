@@ -320,7 +320,7 @@ async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db), current_
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size = 15)
-    pdf.cell(200, 10, txt = f"Comedor: {crud.get_comedor(db, crud.get_mesa(db, reserva.mesa.id))}", ln = 1, align = 'C')
+    pdf.cell(200, 10, txt = f"Comedor: {crud.get_comedor(db, crud.get_mesa(db, reserva.mesa).id)}", ln = 1, align = 'C')
     pdf.cell(200, 10, txt = f"Mesa: {reserva.mesa}", ln = 2, align = 'C')
     pdf.cell(200, 10, txt = f"Usuario: {current_user.nombre}", ln = 3, align = 'C')
     pdf.cell(200, 10, txt = f"Fecha: {reserva.fecha}", ln = 4, align = 'C')
