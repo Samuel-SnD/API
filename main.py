@@ -1,4 +1,5 @@
 from curses.ascii import HT
+from io import StringIO
 import os
 from datetime import datetime, timedelta
 from typing import List, Optional
@@ -12,6 +13,8 @@ from response import responses
 import response.responses
 from passlib.context import CryptContext
 from jose import JWTError, jwt
+from fpdf import FPDF
+from fastapi.responses import StreamingResponse
 
 import uuid
 
@@ -308,6 +311,22 @@ async def get_reserva_by_id(reserva_id:int, db:Session = Depends(get_db), curren
     if reserva is None :
         raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
     return reserva
+
+@app.get("/reservas/{reserva_id}/pdf", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
+async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+    reserva = crud.get_reserva(db, reserva_id)
+    if reserva is None :
+        raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size = 15)
+    pdf.cell(200, 10, txt = "GeeksforGeeks", ln = 1, align = 'C')
+    pdf.cell(200, 10, txt = "A Computer Science portal for geeks.", ln = 2, align = 'C')
+    bytes_send = StringIO()
+    pdf.output(bytes_send)
+    return StreamingResponse(iter(bytes_send), media_type = "application/pdf")
+    
+
 
 @app.get("/reservas/", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
 async def get_reserva_by_fecha(reserva_fecha:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
