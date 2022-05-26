@@ -312,11 +312,12 @@ async def get_reserva_by_id(reserva_id:int, db:Session = Depends(get_db), curren
         raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
     return reserva
 
-@app.get("/reservas/{reserva_id}/pdf", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
-async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
+@app.get("/reservas/{reserva_id}/pdf", responses = {**responses.ENTITY_NOT_FOUND}, tags=["reservas"])
+async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db)) :
     reserva : models.Reserva = crud.get_reserva(db, reserva_id)
     if reserva is None :
         raise HTTPException (status_code = 404, detail = "Reserva no encontrada")
+    current_user = crud.get_user(db, reserva.usuario)
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size = 15)
@@ -328,8 +329,6 @@ async def get_pdf_reserva(reserva_id:int, db:Session = Depends(get_db), current_
     bytes_send = BytesIO(bytes(pdf.output(dest = 'S'), encoding='latin1'))
     return StreamingResponse(iter(bytes_send), media_type = "application/pdf")
     
-
-
 @app.get("/reservas/", response_model = List[schemas.Reserva], responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["reservas"])
 async def get_reserva_by_fecha(reserva_fecha:str, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_user)) :
     return crud.get_reserva_by_fecha(db, reserva_fecha)
