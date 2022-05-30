@@ -253,10 +253,10 @@ async def update_menu(menu_id : int, m : schemas.MenuCreate, db:Session = Depend
         raise HTTPException (status_code = 404, detail = "Menu no encontrado")
 
 @app.delete("/menus/{menu_id}", responses = {**responses.UNAUTORIZED, **responses.ENTITY_NOT_FOUND}, tags=["menus"])
-async def delete_menu(menu : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
-    if not crud.get_menu(db, menu) :
+async def delete_menu(menu_id : int, db:Session = Depends(get_db), current_user:schemas.Usuario = Depends(get_current_admin)) :
+    if not crud.get_menu(db, menu_id) :
         raise HTTPException (status_code = 404, detail = "Menu no encontrado")
-    crud.delete_menu(db, menu)
+    crud.delete_menu(db, menu_id)
 
 #endregion
 
